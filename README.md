@@ -2,24 +2,117 @@
 
 A full-stack Ethereum demo for transparent student club fund management.
 
-This repository includes:
-- A Solidity smart contract (`ClubTreasury`) for contributions and owner-only withdrawals.
-- A Hardhat backend for compile, test, deploy, and local blockchain simulation.
-- A Vite + React frontend dashboard that reads live on-chain treasury state.
+[![Solidity](https://img.shields.io/badge/Solidity-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://docs.soliditylang.org/)
+[![Hardhat](https://img.shields.io/badge/Hardhat-FFF100?style=for-the-badge&logo=hardhat&logoColor=000)](https://hardhat.org/docs)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-0F172A?style=for-the-badge&logo=tailwindcss&logoColor=38BDF8)](https://tailwindcss.com/docs)
 
-## What This Project Demonstrates
+This repository includes a Solidity treasury contract, a Hardhat development workflow, and a React dashboard that reads live on-chain state.
 
-- **Role-Based Access:** A UI toggle switches between 'Admin' and 'Member' modes to demonstrate smart contract access control.
-- **Member Contributions:** Anyone can contribute ETH to the shared treasury.
-- **Protected Withdrawals:** The smart contract strictly enforces that only the owner/admin can withdraw funds.
-- **Immutable Transparency:** Every withdrawal is permanently logged as an expense record (purpose, amount, timestamp) and displayed on the public dashboard.
+## At a Glance
 
-## Tech Stack
+- 🚦 **Role-Based Access:** A UI toggle switches between `Admin` and `Member` modes to demonstrate smart contract access control.
+- 💸 **Open Contributions:** Anyone can contribute ETH to the shared treasury.
+- 🔒 **Protected Withdrawals:** The smart contract strictly enforces that only the owner/admin can withdraw funds.
+- 🧾 **Immutable Expense Ledger:** Every withdrawal is permanently logged as an expense record and shown on the dashboard.
 
-- Solidity + Hardhat
-- Ethers.js v6
-- React (Vite)
-- Tailwind CSS
+## Quick Start Sequence
+
+Use this sequence if you want to test the app immediately:
+
+1. `npm install`
+2. `npm run compile:sync`
+3. Terminal A: `npm run node`
+4. Terminal B: `npm run deploy`
+5. Terminal C: `npm run frontend:dev`
+
+After deployment, set `frontend/.env` with your local node URL, deployed contract address, and two Hardhat private keys.
+
+## Collapsible Setup Guide
+
+<details>
+<summary><strong>1. Installing Dependencies</strong></summary>
+
+From the repository root:
+
+```bash
+npm install
+```
+
+Install the frontend dependencies:
+
+```bash
+npm --prefix frontend install
+```
+
+</details>
+
+<details>
+<summary><strong>2. Compiling the Smart Contract</strong></summary>
+
+Compile the contract and sync the ABI into the frontend:
+
+```bash
+npm run compile:sync
+```
+
+This updates `frontend/src/abi/ClubTreasury.json` so the UI can talk to the latest contract build.
+
+</details>
+
+<details>
+<summary><strong>3. Starting the Local Node</strong></summary>
+
+Run a local Hardhat chain in Terminal A and keep it open:
+
+```bash
+npm run node
+```
+
+Hardhat prints funded test accounts and their private keys. You will use two of those keys in the frontend environment file.
+
+</details>
+
+<details>
+<summary><strong>4. Deploying the Contract</strong></summary>
+
+In Terminal B, deploy the treasury contract to the local node:
+
+```bash
+npm run deploy
+```
+
+Copy the deployed address from the output:
+
+```text
+ClubTreasury deployed to: 0x...
+```
+
+Create or update `frontend/.env` with:
+
+```env
+VITE_RPC_URL=http://127.0.0.1:8545
+VITE_CONTRACT_ADDRESS=0xYOUR_DEPLOYED_CONTRACT_ADDRESS
+VITE_ADMIN_KEY=0xPRIVATE_KEY_OF_HARDHAT_ACCOUNT_0
+VITE_STUDENT_KEY=0xPRIVATE_KEY_OF_ANOTHER_HARDHAT_ACCOUNT
+```
+
+Use only local Hardhat test keys. Do not use real wallet private keys.
+
+</details>
+
+<details>
+<summary><strong>5. Launching the Frontend</strong></summary>
+
+Start the React app in Terminal C:
+
+```bash
+npm run frontend:dev
+```
+
+Open the Vite URL shown in the terminal, usually `http://localhost:5173`.
+
+</details>
 
 ## Repository Layout
 
@@ -29,95 +122,6 @@ This repository includes:
 - `test/ClubTreasury.test.js` - unit tests for contribution and withdrawal behavior
 - `frontend/` - React app and dashboard components
 
-## Prerequisites
-
-- Node.js 18+ (recommended)
-- npm
-
-## Setup
-
-### 1) Install dependencies
-
-From the repository root:
-
-```bash
-npm install
-```
-
-Install frontend dependencies:
-
-```bash
-npm --prefix frontend install
-```
-
-### 2) Compile contract and sync ABI to frontend
-
-```bash
-npm run compile:sync
-```
-
-This generates build artifacts and updates:
-- `frontend/src/abi/ClubTreasury.json`
-
-### 3) Start the local blockchain
-
-Run this in terminal A (keep it running):
-
-```bash
-npm run node
-```
-
-Hardhat will print test accounts and private keys. You will use two keys in the frontend env file.
-
-### 4) Deploy contract to localhost
-
-Run this in terminal B:
-
-```bash
-npm run deploy
-```
-
-Copy the deployed address from output:
-
-```text
-ClubTreasury deployed to: 0x...
-```
-
-### 5) Create frontend environment file
-
-Create `frontend/.env` with the following values:
-
-```env
-VITE_RPC_URL=http://127.0.0.1:8545
-VITE_CONTRACT_ADDRESS=0xYOUR_DEPLOYED_CONTRACT_ADDRESS
-VITE_ADMIN_KEY=0xPRIVATE_KEY_OF_HARDHAT_ACCOUNT_0
-VITE_STUDENT_KEY=0xPRIVATE_KEY_OF_ANOTHER_HARDHAT_ACCOUNT
-```
-
-Notes:
-- `VITE_ADMIN_KEY` should match the deployer/owner account.
-- Use only local Hardhat test keys. Never use real wallet private keys.
-
-### 6) Start frontend
-
-Run this in terminal C:
-
-```bash
-npm run frontend:dev
-```
-
-Open the URL shown by Vite (usually `http://localhost:5173`).
-
-## Start Flow (Quick Sequence)
-
-Use this order every time you run locally:
-
-1. `npm run compile:sync`
-2. Terminal A: `npm run node`
-3. Terminal B: `npm run deploy`
-4. Update `frontend/.env` with the new deployed address
-5. Terminal C: `npm run frontend:dev`
-
 ## Useful Commands
 
 - `npm test` - run Hardhat tests
@@ -126,16 +130,35 @@ Use this order every time you run locally:
 - `npm run frontend:build` - build frontend for production
 - `npx hardhat clean` - clears the cache and artifacts if the local node acts up
 
-## Troubleshooting
+## Troubleshooting FAQ
 
-- **Blank UI or contract errors:**
-  - Confirm `VITE_CONTRACT_ADDRESS` is from the latest deploy on the currently running local node.
-- **"Set wallet keys in frontend/.env":**
-  - Add valid Hardhat private keys for `VITE_ADMIN_KEY` and `VITE_STUDENT_KEY`.
-- **ABI mismatch after contract edits:**
-  - Re-run `npm run compile:sync` and restart the frontend.
-- **Transactions fail after restarting node:**
-  - Hardhat resets its state when restarted. You must re-deploy (`npm run deploy`) and update `VITE_CONTRACT_ADDRESS` in your `.env`.
+<details>
+<summary><strong>Blank UI or contract errors</strong></summary>
+
+Confirm `VITE_CONTRACT_ADDRESS` is from the latest deploy on the currently running local node.
+
+</details>
+
+<details>
+<summary><strong>Set wallet keys in frontend/.env</strong></summary>
+
+Add valid Hardhat private keys for `VITE_ADMIN_KEY` and `VITE_STUDENT_KEY`.
+
+</details>
+
+<details>
+<summary><strong>ABI mismatch after contract edits</strong></summary>
+
+Re-run `npm run compile:sync` and restart the frontend.
+
+</details>
+
+<details>
+<summary><strong>Transactions fail after restarting node</strong></summary>
+
+Hardhat resets its state when restarted. Re-deploy with `npm run deploy` and update `VITE_CONTRACT_ADDRESS` in your `.env`.
+
+</details>
 
 ## Security Notice
 
